@@ -34,7 +34,7 @@ TetrisDateHandle::~TetrisDateHandle(){
 
 
 void TetrisDateHandle::h_initTetrisState_PositionArray(){
-    tetrisStateArray = new int[t_Counts*(sizeof(int))]();
+    tetrisStateArray = new int[t_Counts]();
     positionArray = new CCPoint[t_Counts]();
     
     if (tetrisStateArray==NULL || positionArray==NULL) {
@@ -66,26 +66,26 @@ void TetrisDateHandle::h_ShowDebug(){
 }
 
 bool TetrisDateHandle::h_checkWillDisappearBlocks(){
+    bool _tag=false;
+    int _index=0;
     for (int r=0; r<t_row; r++) {
         int _in = h_getIndexAt(0, r);
         int _flag = h_checkTetrisStateArrayRow_State(_in);
-        switch (_flag) {
-            case 1:{
-                TetrisGameLayer::getSharedTetrisGameLayer()->G_g_b_blockParentRemoveChildWithRow(r);
-                return true;
-            }
-                break;
-            case 0:
-                return false;
-                break;
-            case -1:
-                continue;
-                break;
-            default:
-                break;
+        
+        if (_flag==1) {
+            TetrisGameLayer::getSharedTetrisGameLayer()->G_g_b_blockParentRemoveChildWithRow(r-_index);
+            _index++;
+            _tag = true;
+            continue;
+        }
+        if (_flag==0) {
+            return _tag;
+        }
+        if (_flag==-1) {
+            continue;
         }
     }
-    return false;
+    return _tag;
 }
 
 int TetrisDateHandle::h_checkTetrisStateArrayRow_State(int _index){

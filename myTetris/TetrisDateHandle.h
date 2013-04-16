@@ -99,6 +99,11 @@ public:
             CCLog("Tetris State Array is NULL!");
     }
     
+    inline void h_ClearTetrisStateArray(){//用0清空 数组中
+        memset(tetrisStateArray, 0, sizeof(int)*t_Counts);
+        //
+    }
+    
     bool h_checkWillDisappearBlocks();
 
     int h_checkTetrisStateArrayRow_State(int _index);

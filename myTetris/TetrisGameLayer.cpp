@@ -114,6 +114,7 @@ void TetrisGameLayer::downButtonPressed(cocos2d::CCNode *sender){
         delete G_current_HandleType;
         G_current_HandleType = NULL;
         while (TetrisDateHandle::getSharedTetrisDateHandle()->h_checkWillDisappearBlocks()) {
+            G_g_b_blockParentChildDropDown();
             CCLog("do check ------------");
         }
         TetrisDateHandle::getSharedTetrisDateHandle()->h_checkWillDisappearBlocks();
@@ -179,22 +180,18 @@ void TetrisGameLayer::G_g_b_blockParentRemoveChildWithRow(const int _row){
         if (_block->b_get_B_Row()==_row) {
             _block->b_disappear();
             _index++;
+        }else if (_block->b_get_B_Row()>_row){//当方块的row>_row 时 掉下一格
+            _block->b_DropDown();
         }
     }
-    G_g_b_blockParentChildDropDown();
 }
 
 void TetrisGameLayer::G_g_b_blockParentChildDropDown(){
     TetrisDateHandle::getSharedTetrisDateHandle()->h_ShowDebug();
     unsigned int count = G_B_blockParent->getChildrenCount();
-    for (int i=0; i<count; i++) {
-        TetrisBlock * _block = (TetrisBlock*)G_B_blockParent->getChildren()->objectAtIndex(i);
-        _block->b_UpdateTetrisStateArray(0);
-    }
-    for (int i=0; i<count; i++) {
-        TetrisBlock * _block = (TetrisBlock*)G_B_blockParent->getChildren()->objectAtIndex(i);
-        _block->b_DropDown();
-    }
+    
+    TetrisDateHandle::getSharedTetrisDateHandle()->h_ClearTetrisStateArray();//将statearray的全部清空
+
     for (int i=0; i<count; i++) {
         TetrisBlock * _block = (TetrisBlock*)G_B_blockParent->getChildren()->objectAtIndex(i);
         _block->b_UpdateTetrisStateArray(1);
